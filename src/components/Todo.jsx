@@ -5,12 +5,17 @@ import TodoInfo from "./TodoInfo"
 import TodoList from "./TodoList"
 
 const Todo =  () => {
-
-  const [tasks, setTasks] = useState([
-    {id: 'task-1', title: 'Buy milk', isDone: false},
-    {id: 'task-2', title: 'Buy ilk', isDone: true},
-    {id: 'task-3', title: 'Buy asasail', isDone: true},
-  ])
+  
+  const [tasks, setTasks] = useState(() => {
+    const savedTasks = localStorage.getItem('tasks')
+    if (savedTasks) {
+      return JSON.parse(savedTasks)
+    }
+    return [
+      {id: 'task-1', title: 'Buy milk', isDone: false},
+      {id: 'task-2', title: 'Buy ilk', isDone: true},  
+    ]
+  })
 
   const [newTaskTitle, setNewTaskTitle] = useState('')
 
@@ -56,8 +61,7 @@ const Todo =  () => {
     }
   }
 
-  useEffect(()=> {
-    console.log('Saved because its changed', tasks)
+  useEffect(()=> {    
     localStorage.setItem('tasks', JSON.stringify(tasks))
   }, [tasks] )
 
