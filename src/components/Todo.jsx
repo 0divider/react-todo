@@ -61,12 +61,17 @@ const Todo =  () => {
       setTasks([...tasks, newTask])
       setNewTaskTitle('')
       setSearchQuery('')      
+      newTaskInputRef.current.focus()
     }    
   }
 
   useEffect(()=> {    
     localStorage.setItem('tasks', JSON.stringify(tasks))
   }, [tasks] )
+
+  useEffect(()=>{
+    newTaskInputRef.current.focus()
+  },[])
 
   const clearSearchQuery = searchQuery.trim().toLowerCase()
   const filteredTasks = clearSearchQuery.length > 0 
