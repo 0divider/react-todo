@@ -14,13 +14,13 @@ const TodoList = (props) => {
 
 	if(!hasTasks) {
 		return (
-			<div className="todo__empty-message">There are no any tasks yet!</div>
+			<div className="todo__empty-message">There are no tasks yet!</div>
 		)
 	}
 
   if (hasTasks && isEmpltyFilteredTasks) {
     return (
-			<div className="todo__empty-message">Tasks not found :\</div>
+			<div className="todo__empty-message">Tasks not found :/ </div>
 		)
   }
 

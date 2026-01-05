@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import AddTaskForm from "./AddTaskForm"
 import SearchTaskForm from "./SearchTaskForm"
 import TodoInfo from "./TodoInfo"
@@ -17,7 +17,9 @@ const Todo =  () => {
     ]
   })
 
-  const [newTaskTitle, setNewTaskTitle] = useState('')
+  //const [newTaskTitle, setNewTaskTitle] = useState('')
+  const newTaskInputRef = useRef(null)
+  console.log('newTaskInputRef:', newTaskInputRef)
 
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -49,6 +51,9 @@ const Todo =  () => {
  
 
   const addTask = () => {
+
+    const newTaskTitle = newTaskInputRef.current.value
+
     if (newTaskTitle.trim().length > 0) {
       const newTask = {
         id: Date.now().toString(),
@@ -56,9 +61,11 @@ const Todo =  () => {
         isDone: false
       }
       setTasks([...tasks, newTask])
-      setNewTaskTitle('')
+      //setNewTaskTitle('')
       setSearchQuery('')
+      newTaskInputRef.current.value = ''
     }
+    console.log('newTaskInputRef:', newTaskInputRef)
   }
 
   useEffect(()=> {    
@@ -75,8 +82,9 @@ const Todo =  () => {
       <h1 className="todo__title">To Do List</h1>
       <AddTaskForm 
         addTask={addTask}
-        newTaskTitle={newTaskTitle}
-        setNewTaskTitle={setNewTaskTitle} 
+        // newTaskTitle={newTaskTitle}
+        // setNewTaskTitle={setNewTaskTitle} 
+        newTaskInputRef={newTaskInputRef}
       />
       <SearchTaskForm 
         searchQuery={searchQuery}
