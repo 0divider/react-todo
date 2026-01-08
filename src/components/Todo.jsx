@@ -4,6 +4,7 @@ import SearchTaskForm from "./SearchTaskForm"
 import TodoInfo from "./TodoInfo"
 import TodoList from "./TodoList"
 import Button from "./Button"
+import { TasksContext } from "../context/tasksContext"
 
 const Todo =  () => {
   const [tasks, setTasks] = useState(() => {
@@ -24,9 +25,7 @@ const Todo =  () => {
   const firstIncompleteTaskRef = useRef(null)
   const firstIncompleteTaskId = tasks.find(({isDone})=>!isDone)?.id
 
-  const doneTasksount = useMemo(()=>{
-    return tasks.filter((item) => item.isDone).length
-  }, [tasks])
+  
   
   const deleteAllTasks = useCallback(() => {
     const isConfirmed = confirm("Are you sure?")
@@ -36,21 +35,21 @@ const Todo =  () => {
   }, [])
 
   const deleteTask = useCallback((taskId) => {
-    setTasks(
-      tasks.filter((task) => task.id != taskId)
+    setTasks(prevTasks =>
+      prevTasks.filter((task) => task.id !== taskId)
     )
-  }, [tasks])
+  }, [])
 
   const toggleTaskComplete = useCallback((taskId, isDone) => {
-    setTasks(
-      tasks.map((task) => {
+    setTasks(prevTasks =>
+      prevTasks.map((task) => {
         if(task.id === taskId) {
           return {...task, isDone}
         }
         return task
       })
     )
-  }, [tasks])
+  }, [])
  
 
   const addTask = useCallback(() => {    
@@ -86,35 +85,36 @@ const Todo =  () => {
   }, [searchQuery, tasks])
 
 	return(
-		<div className="todo">
-      <h1 className="todo__title">To Do List</h1>
-      <AddTaskForm 
-        addTask={addTask}
-        newTaskTitle={newTaskTitle}
-        setNewTaskTitle={setNewTaskTitle} 
-        newTaskInputRef={newTaskInputRef}
-      />
-      <SearchTaskForm 
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}        
-      />
-      <TodoInfo 
-        total={tasks.length}
-        done={doneTasksount} 
-        onDeleteAllButonClick={deleteAllTasks}
-      />      
-      <Button onClick={ () => firstIncompleteTaskRef.current?.scrollIntoView({ behavior: 'smooth' })}>
-        Scroll to first uncomplete task
-      </Button>
-      <TodoList 
-        tasks={tasks}
-        filteredTasks={filteredTasks}
-        onDeleteTaskButtonClick={deleteTask}
-        onTaskCompleteChange={toggleTaskComplete} 
-        firstIncompleteTaskRef={firstIncompleteTaskRef}
-        firstIncompleteTaskId={firstIncompleteTaskId}
-      />      
-    </div>
+		<TasksContext.Provider
+      value={{
+        tasks, 
+        filteredTasks,
+        firstIncompleteTaskRef,
+        firstIncompleteTaskId,
+        deleteTask,
+        deleteAllTasks,
+        toggleTaskComplete,
+      }}
+    >
+      <div className="todo">
+        <h1 className="todo__title">To Do List</h1>
+        <AddTaskForm 
+          addTask={addTask}
+          newTaskTitle={newTaskTitle}
+          setNewTaskTitle={setNewTaskTitle} 
+          newTaskInputRef={newTaskInputRef}
+        />
+        <SearchTaskForm 
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}        
+        />
+        <TodoInfo />      
+        <Button onClick={ () => firstIncompleteTaskRef.current?.scrollIntoView({ behavior: 'smooth' })}>
+          Scroll to first uncomplete task
+        </Button>
+        <TodoList />      
+      </div>
+    </TasksContext.Provider>
 	)
 }
 
